@@ -1,0 +1,21 @@
+{
+    "name": "oleksha/blog.loc",
+    "description": "Blog on PHP and MySQL",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Blog\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Oleksha D."
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "slim/slim": "4.*",
+        "slim/psr7": "^1.6",
+        "twig/twig": "^3.0"
+    }
+}
