@@ -2,6 +2,7 @@
 
 namespace Blog;
 
+use Exception;
 use PDO;
 
 class PostMapper
@@ -34,6 +35,17 @@ class PostMapper
     $result = $statement->fetchAll();
 
     return array_shift($result);
+  }
+
+  public function getList(string $direction): ?array
+  {
+    if (!in_array($direction, ['DESC', 'ASC'])) {
+      throw new Exception('Указанная сортировка не поддерживается');
+    }
+
+    $statement = $this->connection->prepare("SELECT * FROM post ORDER BY published_date $direction");
+    $statement->execute();
+    return $statement->fetchAll();
   }
 
 }

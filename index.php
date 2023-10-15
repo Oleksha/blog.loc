@@ -1,5 +1,6 @@
 <?php
 
+use Blog\LatestPosts;
 use Blog\PostMapper;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -28,22 +29,24 @@ try {
 
 $app = AppFactory::create();
 
-$postMapper = new PostMapper($connection);
-
-$app->get('/', function (Request $request, Response $response, $args) use ($view) {
-  $body = $view->render('index.twig');
+$app->get('/', function (Request $request, Response $response) use ($view, $connection) {
+  $latestPost = new LatestPosts($connection);
+  $posts = $latestPost->get(2);
+  $body = $view->render('index.twig', [
+    'posts' => $posts
+  ]);
   $response->getBody()->write($body);
   return $response;
 });
-$app->get('/about', function (Request $request, Response $response, $args) use ($view) {
+$app->get('/about', function (Request $request, Response $response) use ($view) {
   $body = $view->render('about.twig', [
     'name' => 'Олекша'
   ]);
   $response->getBody()->write($body);
   return $response;
 });
-$app->get('/{url_key}', function (Request $request, Response $response, $args) use ($view) {
-  global $postMapper;
+$app->get('/{url_key}', function (Request $request, Response $response, $args) use ($view, $connection) {
+  $postMapper = new PostMapper($connection);
   $post = $postMapper->getByUrlKey((string) $args['url_key']);
   if (empty($post)) {
     $body = $view->render('not-found.twig');

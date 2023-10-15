@@ -16,6 +16,7 @@
     "require": {
         "slim/slim": "4.*",
         "slim/psr7": "^1.6",
-        "twig/twig": "^3.0"
+        "twig/twig": "^3.0",
+        "ext-pdo": "*"
     }
 }
