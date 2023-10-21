@@ -3,22 +3,21 @@
 namespace Blog;
 
 use Exception;
-use PDO;
 
 class PostMapper
 {
   /**
-   * @var PDO
+   * @var Database
    */
-  private PDO $connection;
+  private Database $database;
 
   /**
    * PostMapper конструктор
-   * @param PDO $connection
+   * @param Database $connection
    */
-  public function __construct(PDO $connection)
+  public function __construct(Database $database)
   {
-    $this->connection = $connection;
+    $this->database = $database;
   }
 
   /**
@@ -27,7 +26,7 @@ class PostMapper
    */
   public function getByUrlKey(string $urlKey) : ?array
   {
-    $statement = $this->connection->prepare('SELECT * FROM post WHERE url_key = :url_key');
+    $statement = $this->database->getConnection()->prepare('SELECT * FROM post WHERE url_key = :url_key');
     $statement->execute([
       'url_key' => $urlKey
     ]);
@@ -50,7 +49,7 @@ class PostMapper
       throw new Exception('Указанная сортировка не поддерживается');
     }
     $start = ($page - 1) * $limit;
-    $statement = $this->connection->prepare("SELECT * FROM post ORDER BY published_date $direction LIMIT $start,$limit");
+    $statement = $this->database->getConnection()->prepare("SELECT * FROM post ORDER BY published_date $direction LIMIT $start,$limit");
     $statement->execute();
     return $statement->fetchAll();
   }
@@ -60,7 +59,7 @@ class PostMapper
    */
   public function getTotalCount(): int
   {
-    $statement = $this->connection->prepare("SELECT count(post_id) as total FROM post");
+    $statement = $this->database->getConnection()->prepare("SELECT count(post_id) as total FROM post");
     $statement->execute();
     return (int) ($statement->fetchColumn() ?? 0);
   }
