@@ -18,11 +18,11 @@ class Database
    * @param string|null $username
    * @param string|null $password
    */
-  public function __construct(string $dsn, string $username = null, string $password = null)
+  public function __construct(PDO $connection)
   {
     //echo $dsn; die;
     try {
-      $this->connection = new PDO($dsn, $username, $password);
+      $this->connection = $connection;
       $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       $this->connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     } catch (PDOException $exception) {
